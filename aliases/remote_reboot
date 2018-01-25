@@ -1,25 +1,29 @@
 ---
 name: chatops.ansible_remote_reboot_services
 action_ref: chatops_reboot_services.remote_reboot
-description: Show status for hosts (ansible ping module)
+description: Restart service on remote hosts
 formats:
-  - display: "status <hosts>"
+  - display: "service restart <service_name> on <hosts>"
     representation:
-      - "status {{ hosts }}"
-      - "ping {{ hosts }}"
+      - "service restart {{ service_name }} on {{ hosts }}"
 result:
   format: |
-    Here is your status for `{{ execution.parameters.hosts }}` host(s): {~}
+    Service restart `{{ execution.parameters.service_name }}` on `{{ execution.parameters.hosts }}` host(s): {~}
+    {% if execution.result.stderr %}
+    *Exit Status*: `{{ execution.result.return_code }}`
+    *Stderr:* ```{{ execution.result.stderr }}```
+    *Stdout:*
+    {% endif %}
     ```{{ execution.result.stdout }}```
   extra:
     slack:
       color: "{% if execution.result.succeeded %}good{% else %}danger{% endif %}"
       fields:
-        - title: Alive
+        - title: Restarted
           value: "{{ execution.result.stdout|regex_replace('(?!SUCCESS).', '')|wordcount }}"
           short: true
-        - title: Dead
-          value: "{{ execution.result.stdout|regex_replace('(?!UNREACHABLE).', '')|wordcount }}"
+        - title: Failed
+          value: "{{ execution.result.stdout|regex_replace('(?!(FAILED|UNREACHABLE)!).', '')|wordcount }}"
           short: true
       footer: "{{ execution.id }}"
       footer_icon: "https://stackstorm.com/wp/wp-content/uploads/2015/01/favicon.png"
