@@ -1,6 +1,7 @@
 ### Place information about your pack version here.
 ---
-name: st2-pack-template
+ref: chatops_reboot_services
+name: st2_chatops_reboot_services
 description: A blank pack template!
 version: 0.1.0
 author: StackStorm Stanley
