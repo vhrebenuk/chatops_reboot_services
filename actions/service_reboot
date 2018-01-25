@@ -1,7 +1,7 @@
 ---
 name: service_reboot
 description: Restart service on remote hosts
-runner_type: remote-shell-cmd
+runner_type: local-shell-cmd
 entry_point: ""
 enabled: true
 parameters:
